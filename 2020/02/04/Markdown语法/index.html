@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next mist use-motion" lang="zh-Hans">
+<html class="theme-next gemini use-motion" lang="zh-Hans">
 <head>
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -13,6 +13,13 @@
 <meta name="theme-color" content="#222">
 
 
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
 
 
 
@@ -109,7 +116,7 @@
 <meta property="og:type" content="article">
 <meta property="og:title" content="Markdown语法">
 <meta property="og:url" content="https://jz-cxq.github.io/2020/02/04/Markdown%E8%AF%AD%E6%B3%95/index.html">
-<meta property="og:site_name" content="JZ&#39;s Blog">
+<meta property="og:site_name" content="惊蛰的个人博客">
 <meta property="og:description" content="#MarkDown标题一级标题&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;二级标题  井号可表示1到六级标题#一级##二级###三级######六级  #MarkDown段落格式换行时两个或两个以上的空格加上换行 MARKDOWN支持三种字体，斜体，粗体和粗斜体 斜体用斜体xieti 粗体用 cuti 粗体斜体体用 粗斜体分隔线    s删除线下划线^脚注.  #MarkDown列表  第一项 第二项   第一项  点点点">
 <meta property="og:image" content="http://static.runoob.com/images/runoob-logo.png">
 <meta property="og:image" content="http://static.runoob.com/images/runoob-logo.png">
@@ -128,7 +135,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Mist',
+    scheme: 'Gemini',
     version: '5.1.4',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
     fancybox: true,
@@ -156,7 +163,7 @@
 
 
 
-  <title>Markdown语法 | JZ's Blog</title>
+  <title>Markdown语法 | 惊蛰的个人博客</title>
   
 
 
@@ -187,7 +194,7 @@
     <div class="custom-logo-site-title">
       <a href="/"  class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">JZ's Blog</span>
+        <span class="site-title">惊蛰的个人博客</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
@@ -337,7 +344,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="JZ's Blog">
+      <meta itemprop="name" content="惊蛰的个人博客">
     </span>
 
     
@@ -626,7 +633,7 @@
                 alt="惊蛰" />
             
               <p class="site-author-name" itemprop="name">惊蛰</p>
-              <p class="site-description motion-element" itemprop="description">天道酬勤</p>
+              <p class="site-description motion-element" itemprop="description"></p>
           </div>
 
           <nav class="site-state motion-element">
@@ -738,7 +745,7 @@
 
 
 
-  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
 
 
 
@@ -866,6 +873,13 @@
 
   
   
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
 
   
   <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
@@ -1122,7 +1136,7 @@
 
                   // select top N slices in content
 
-                  var upperBound = parseInt('1');
+                  var upperBound = parseInt('5');
                   if (upperBound >= 0) {
                     slicesOfContent = slicesOfContent.slice(0, upperBound);
                   }
@@ -1189,7 +1203,7 @@
             }
           }
 
-          if ('auto' === 'mamual') {
+          if ('auto' === 'auto') {
             input.addEventListener('input', inputEventFunction);
           } else {
             $('.search-icon').click(inputEventFunction);

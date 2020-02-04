@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next mist use-motion" lang="zh-Hans">
+<html class="theme-next gemini use-motion" lang="zh-Hans">
 <head>
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -13,6 +13,13 @@
 <meta name="theme-color" content="#222">
 
 
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
 
 
 
@@ -105,12 +112,10 @@
 
 
 
-<meta name="description" content="天道酬勤">
 <meta property="og:type" content="website">
-<meta property="og:title" content="JZ&#39;s Blog">
+<meta property="og:title" content="惊蛰的个人博客">
 <meta property="og:url" content="https://jz-cxq.github.io/archives/2019/index.html">
-<meta property="og:site_name" content="JZ&#39;s Blog">
-<meta property="og:description" content="天道酬勤">
+<meta property="og:site_name" content="惊蛰的个人博客">
 <meta property="article:author" content="惊蛰">
 <meta name="twitter:card" content="summary">
 
@@ -120,7 +125,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Mist',
+    scheme: 'Gemini',
     version: '5.1.4',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
     fancybox: true,
@@ -148,7 +153,7 @@
 
 
 
-  <title>归档 | JZ's Blog</title>
+  <title>归档 | 惊蛰的个人博客</title>
   
 
 
@@ -179,7 +184,7 @@
     <div class="custom-logo-site-title">
       <a href="/"  class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">JZ's Blog</span>
+        <span class="site-title">惊蛰的个人博客</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
@@ -448,7 +453,7 @@
                 alt="惊蛰" />
             
               <p class="site-author-name" itemprop="name">惊蛰</p>
-              <p class="site-description motion-element" itemprop="description">天道酬勤</p>
+              <p class="site-description motion-element" itemprop="description"></p>
           </div>
 
           <nav class="site-state motion-element">
@@ -560,7 +565,7 @@
 
 
 
-  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
 
 
 
@@ -688,6 +693,13 @@
 
   
   
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
 
   
 
@@ -940,7 +952,7 @@
 
                   // select top N slices in content
 
-                  var upperBound = parseInt('1');
+                  var upperBound = parseInt('5');
                   if (upperBound >= 0) {
                     slicesOfContent = slicesOfContent.slice(0, upperBound);
                   }
@@ -1007,7 +1019,7 @@
             }
           }
 
-          if ('auto' === 'mamual') {
+          if ('auto' === 'auto') {
             input.addEventListener('input', inputEventFunction);
           } else {
             $('.search-icon').click(inputEventFunction);
