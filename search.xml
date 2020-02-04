@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Markdown语法</title>
+    <url>/2020/02/04/Markdown%E8%AF%AD%E6%B3%95/</url>
+    <content><![CDATA[<hr>
+<p>#MarkDown标题<br>一级标题<br>=======<br>二级标题</p>
+<hr>
+<p>井号可表示1到六级标题<br>#一级<br>##二级<br>###三级<br>######六级</p>
+<hr>
+<p>#MarkDown段落格式<br>换行时两个或两个以上的空格加上换行</p>
+<p>MARKDOWN支持三种字体，斜体，粗体和粗斜体</p>
+<p>斜体用<em>斜体</em><br><em>xieti</em></p>
+<p>粗体用 <strong>cuti</strong> <strong>粗体</strong><br>斜体体用 <strong><em>粗斜体</em></strong><br>分隔线</p>
+<hr>
+<hr>
+<hr>
+<p><del>s删除线</del><br><u>下划线</u><br><a href="脚注内容">^脚注</a>.</p>
+<hr>
+<p>#MarkDown列表</p>
+<ul>
+<li>第一项</li>
+<li>第二项</li>
+</ul>
+<ol>
+<li><p>第一项</p>
+<ul>
+<li>点点点</li>
+<li>ddd</li>
+<li>点点点</li>
+</ul>
+<p>列表嵌套需要在子列表之前加上四个空格</p>
+<hr>
+<p>#MarkDown区块</p>
+<blockquote>
+<p>区块<br>ss<br>ss<br>ss<br>ss</p>
+</blockquote>
+</li>
+</ol>
+<p>区块可以与列表组合使用</p>
+<hr>
+<p>#MarkDown上的代码<br><code>printf()</code>函数<br>代码段可用三个点包围，并且可指定一种语言</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> main（）</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>；</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<p>#MarkDown上的链接<br><a href="链接地址">链接名称</a><br><a href="www.runoob.com">菜鸟教程</a></p>
+<p>高级链接，类似于define</p>
+<p><a href="www.runoob.com">菜鸟教程</a></p>
+<hr>
+<p>#MarkDown图片<br><img src="http://static.runoob.com/images/runoob-logo.png" alt="RUNOOB 标"></p>
+<p><img src="http://static.runoob.com/images/runoob-logo.png" alt="RUNOOB 图标" title="RUNOOB"></p>
+<img src="http://static.runoob.com/images/runoob-logo.png" width="100%">
+****
+#MarkDown表格
+
+<table>
+<thead>
+<tr>
+<th align="left">表头</th>
+<th align="center">表头</th>
+<th align="right">表头</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">单元格单元格</td>
+<td align="center">单</td>
+<td align="right">单元格</td>
+</tr>
+<tr>
+<td align="left">1</td>
+<td align="center"></td>
+<td align="right"></td>
+</tr>
+<tr>
+<td align="left">可以用：表示表格的对齐方式</td>
+<td align="center"></td>
+<td align="right"></td>
+</tr>
+<tr>
+<td align="left">*****</td>
+<td align="center"></td>
+<td align="right"></td>
+</tr>
+<tr>
+<td align="left">#MarkDown高级应用</td>
+<td align="center"></td>
+<td align="right"></td>
+</tr>
+<tr>
+<td align="left">使用 <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Del</kbd> 重启电脑</td>
+<td align="center"></td>
+<td align="right"></td>
+</tr>
+</tbody></table>
+<p>使用 <b>Ctrl</b>+<br>Alt</br>+<br>Del</br> 重启电脑<br>使用 <i>Ctrl<i>+<em>Alt</em>+<sub>Del</sub> 重启电脑</p>
+<p>用反斜杠表示转义<br><strong>文本加粗</strong><br>**文本加粗**</p>
+<p>$$<br>\mathbf{V}_1 \times \mathbf{V}_2 =  \begin{vmatrix}<br>\mathbf{i} &amp; \mathbf{j} &amp; \mathbf{k} \<br>\frac{\partial X}{\partial u} &amp;  \frac{\partial Y}{\partial u} &amp; 0 \<br>\frac{\partial X}{\partial v} &amp;  \frac{\partial Y}{\partial v} &amp; 0 \<br>\end{vmatrix}<br>$$tep1}{\style{visibility:hidden}{(x+1)(x+1)}}<br>$$</p>
+]]></content>
+      <categories>
+        <category>文档</category>
+        <category>测试</category>
+      </categories>
+      <tags>
+        <tag>Markdown</tag>
+        <tag>编程</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>DEMO</title>
+    <url>/2019/12/26/DEMO/</url>
+    <content><![CDATA[<p>##cankao</p>
+<hr>
+]]></content>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/2019/12/26/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+]]></content>
+  </entry>
+</search>
