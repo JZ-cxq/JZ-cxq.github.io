@@ -1,11 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>嵌入式代码开发规范</title>
+    <url>/2020/02/05/%E5%B5%8C%E5%85%A5%E5%BC%8F%E4%BB%A3%E7%A0%81%E5%BC%80%E5%8F%91%E8%A7%84%E8%8C%83/</url>
+    <content><![CDATA[<p>这是一个嵌入式开发的代码规范文档<br>为了在写代码时有据可循而不是凭印象来编写，故输出文档形式<br>在编写期间参考了 Linux内核，谷歌和Bataflight等代码规范和git,cmockery,micropython,ametal,bataflight等工程代码</p>
+<a id="more"></a>
+<h2 id="缩进"><a href="#缩进" class="headerlink" title="缩进"></a>缩进</h2><p>1 tab表示四个空格  </p>
+<p>除了注释、文档和 Kconfig 之外，不要使用空格来缩进</p>
+<h2 id="把长的行和字符串打散"><a href="#把长的行和字符串打散" class="headerlink" title="把长的行和字符串打散"></a>把长的行和字符串打散</h2><p>代码风格的意义就在于用平常使用的工具来维持代码的可读性和可维护性。</p>
+<p>每一行的长度的限制是 120 列，长于 120 列的语句要打散成有意义的片段。因为 120 列便于在GitHub上查看，除非超过 120 列能显著增加可读性并且不会隐藏信息。  </p>
+<p>子片段要明显短于母片段，并明显靠右。这同样适用于有着很长参数列表的函数头。  </p>
+<p>绝对不要打散对用户可见的字符串，例如 printk 信息，因为这样就很难对它们 grep。  </p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">parse_bundle_header</span><span class="params">(<span class="keyword">int</span> fd, struct bundle_header *header,</span></span></span><br><span class="line"><span class="function"><span class="params">			                    <span class="keyword">const</span> <span class="keyword">char</span> *report_path)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">strbuf</span> <span class="title">buf</span> = <span class="title">STRBUF_INIT</span>;</span></span><br><span class="line">	<span class="keyword">int</span> status = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/* The bundle header begins with the signature */</span></span><br><span class="line">	<span class="keyword">if</span> (strbuf_getwholeline_fd(&amp;buf, fd, <span class="string">'\n'</span>) ||</span><br><span class="line">	    <span class="built_in">strcmp</span>(buf.buf, bundle_signature)) &#123;</span><br><span class="line">		<span class="keyword">if</span> (report_path) &#123;</span><br><span class="line">			error(_(<span class="string">"'%s' does not look like a v2 bundle file"</span>),</span><br><span class="line">			      report_path);</span><br><span class="line">        &#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="大括号的放置"><a href="#大括号的放置" class="headerlink" title="大括号的放置"></a>大括号的放置</h2><p>起始大括号放在行尾，结束大括号放在行首,所以：  </p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (x is <span class="literal">true</span>) &#123;</span><br><span class="line">    we <span class="keyword">do</span> y</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这适用于所有的非函数语句块 (if, switch, for, while, do)。比如：  </p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (x == y) &#123;</span><br><span class="line">    we <span class="keyword">do</span> x</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (x &gt; y) &#123;</span><br><span class="line">    we <span class="keyword">do</span> y</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    we <span class="keyword">do</span> z</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>无论 if 和 else 后面是不是单个语句， <strong>{} 都不可省略</strong></li>
+</ul>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">switch</span> (action) &#123;</span><br><span class="line"><span class="keyword">case</span> ADD:</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"add"</span>;</span><br><span class="line"><span class="keyword">case</span> REMOVE:</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"remove"</span>;</span><br><span class="line"><span class="keyword">case</span> CHANGE:</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"change"</span>;</span><br><span class="line"><span class="keyword">default</span>:</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= <span class="number">10</span>; i ++) &#123;</span><br><span class="line">    we <span class="keyword">do</span> y</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">do</span> &#123;</span><br><span class="line">    body of <span class="keyword">do</span>-loop</span><br><span class="line">&#125; <span class="keyword">while</span> (condition);</span><br></pre></td></tr></table></figure>
+<p>不过，有一个例外，那就是函数：函数的起始大括号放置于下一行的开头，所以：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">function</span><span class="params">(<span class="keyword">int</span> x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    body of function</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="空格的放置"><a href="#空格的放置" class="headerlink" title="空格的放置"></a>空格的放置</h2><ul>
+<li><p>空格的使用方式主要取决于它是用于函数还是关键字。(大多数) 关键字后要加一个空格。值得注意的例外是 sizeof, typeof, alignof 和 <strong>attribute</strong>，这    些关键字某些程度上看起来更像函数 (它们也常常伴随小括号而使用，尽管在 C 里这样的小括号不是必需的，就像 struct fileinfo info; 声明过后的 sizeof info)。<br>所以在这些关键字之后放一个空格:  </p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>, <span class="keyword">switch</span>, <span class="keyword">case</span>, <span class="keyword">for</span>, <span class="keyword">do</span>, <span class="keyword">while</span></span><br></pre></td></tr></table></figure>
+<p>但是不要在 sizeof, typeof, alignof 或者 <strong>attribute</strong> 这些关键字之后放空格。 例如，  </p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">s = <span class="keyword">sizeof</span>(struct file);</span><br></pre></td></tr></table></figure></li>
+<li><p>不要在小括号里的表达式两侧加空格。  </p>
+</li>
+<li><p>当声明指针类型或者返回指针类型的函数时， * 的首选使用方式是使之靠近变量名或者函数名，而不是靠近类型名。例如：  </p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">char</span> *linux_banner;</span><br><span class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">long</span> <span class="title">memparse</span><span class="params">(<span class="keyword">char</span> *ptr, <span class="keyword">char</span> **retptr)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">char</span> *<span class="title">match_strdup</span><span class="params">(<span class="keyword">substring_t</span> *s)</span></span>;</span><br></pre></td></tr></table></figure></li>
+<li><p>大多数二元和三元操作符两侧使用一个空格，例如下面所有这些操作符:  </p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">=  +  -  &lt;  &gt;  *  /  %  |  &amp;  ^  &lt;=  &gt;=  ==  !=  ?  :</span><br></pre></td></tr></table></figure></li>
+<li><p>但是一元操作符后不要加空格:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">&amp;  *  +  -  ~  !  <span class="keyword">sizeof</span>  typeof  <span class="keyword">alignof</span>  __attribute__  defined</span><br></pre></td></tr></table></figure></li>
+<li><p>前缀自加和自减和后缀自加和自减一元操作符前不加空格:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">++  --</span><br></pre></td></tr></table></figure></li>
+<li><p>. 和 -&gt; 结构体成员操作符前后不加空格。  </p>
+</li>
+<li><p>&amp; 和 *  作为指针和引用时与变量之间不加空格。  </p>
+</li>
+<li><p>行尾或空白行中没有尾随空格。  </p>
+</li>
+</ul>
+<h2 id="typedef"><a href="#typedef" class="headerlink" title="typedef"></a>typedef</h2><ul>
+<li>最后一个元素后带有逗号，使在审阅时只显示添加的部分 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">enum</span> &#123;</span><br><span class="line">    MSP_RESULT_ACK = <span class="number">1</span>,</span><br><span class="line">    MSP_RESULT_ERROR = <span class="number">-1</span>,</span><br><span class="line">    MSP_RESULT_NO_REPLY = <span class="number">0</span>,</span><br><span class="line">    MSP_RESULT_CMD_UNKNOWN = <span class="number">-2</span>,</span><br><span class="line">&#125; msp_result_e;</span><br></pre></td></tr></table></figure></li>
+<li>结构体名称motor_mixer_s不可省略，以便作为前置引用  <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">motor_mixer_s</span> &#123;</span></span><br><span class="line">    <span class="keyword">float</span> throttle;</span><br><span class="line">...</span><br><span class="line">    <span class="keyword">float</span> yaw;</span><br><span class="line">&#125; <span class="keyword">motor_mixer_t</span>;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><ul>
+<li><p>变量使用小写字母加 _ 的方式命名，不使用大小写混合方式。(但是当使用官方库或者第三方程序时，代码风格和他们保持一致) ,变量应该是简短且有意义的名词。  </p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">uint8_t</span> lptim1_count_overflow;</span><br><span class="line"><span class="keyword">uint32_t</span> lptim1_count_value;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>C 程序员不使用类似ThisVariableIsATemporaryCounter 这样华丽的名字。C 程序员会称那个变量为 tmp    </p>
+</li>
+<li><p>本地变量名应该简短，而且能够表达相关的含义。如果你有一些随机的整数型的循环计数器，它应该被称为 i 。叫它 loop_counter 并无益处  </p>
+</li>
+<li><p>同样称一个全局函数为 foo（无意义的名字） 是一个难以饶恕的错误。</p>
+</li>
+<li><p>避免使用全局变量(只有当你 * 真正 * 需要它们的时候再用它)，变量应该在最小作用区域前声明,必要时可增加 {} 进一步限制范围  </p>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>当不同的变量的使用无关时，声明后应留一个空白行。</p>
+</li>
+<li><p>不要依赖隐式转换。  </p>
+</li>
+<li><p>浮点常量应使用“ f”后缀定义，例如1.0f和3.1415926f，否则可能会发生双重转换。</p>
+</li>
+</ul>
+<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><h3 id="命名"><a href="#命名" class="headerlink" title="命名"></a>命名</h3><ul>
+<li>函数使用小写字母加 _ 的方式命名，名称包含 动词 + 名词 ，如delete_page,告诉系统“用”某物“做”某事。非静态函数应该以他们的类名或者文件名作为前缀  <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">power_clock_init</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">power_enter_stop</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">power_enter_run</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">power_enter_lprun</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="参数规则"><a href="#参数规则" class="headerlink" title="参数规则"></a>参数规则</h3><ul>
+<li>数据应从右向左移动，如 memcpy（void * dst，const void * src，size_t size）。<br>这也模仿了赋值运算符（例如dst = src;），即输出参数在前，输入参数在后，且所有按引用传递的参数必须加上 const</li>
+</ul>
+<h3 id="声明"><a href="#声明" class="headerlink" title="声明"></a>声明</h3><ul>
+<li>在其包含的.c文件之外未使用的函数应声明为静态。 </li>
+<li>非静态函数应在单个.h文件中声明它们，可在函数前加相同的前缀，利于分辨功能作用对象<br>使用<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> MODULENAME_INTERNALS_</span></span><br><span class="line">… declarations …</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+来保证只包含必要的内容  </li>
+</ul>
+<h2 id="执行"><a href="#执行" class="headerlink" title="执行"></a>执行</h2><ul>
+<li><p>切勿将多条语句放在一行上。  </p>
+</li>
+<li><p>函数应该简短而漂亮，并且只完成一件事情。函数应该可以一屏或者两屏显示完(120*24)，只做一件事情，而且把它做好。</p>
+</li>
+<li><p>一个函数的最大长度是和该函数的复杂度和缩进级数成反比的。所以，如果你有一个理论上很简单的只有一个很长 (但是简单) 的 case 语句的函数，而且你需要在每个 case 里做很多很小的事情，这样的函数尽管很长，但也是可以的。  </p>
+</li>
+<li><p>函数的另外一个衡量标准是本地变量的数量。此数量不应超过 5－10 个，否则你的函数就有问题了。重新考虑一下你的函数，把它分拆成更小的函数。人的大脑一般可以轻松的同时跟踪 7 个不同的事物，如果再增多的话，就会糊涂了。即便你聪颖过人，你也可能会记不清你 2 个星期前做过的事情  </p>
+</li>
+<li><p>一个函数在每个调用中应该只从硬件读取一次数据，最好一次在一个地方读取一次。<br>例如，如果多次需要陀螺仪角度或时间，则读取一次并存储在局部变量中</p>
+</li>
+<li><p>在表达式中，仅应在需要括号的地方使用括号，即运算符优先级的计算顺序不正确，或在没有括号的情况下触发编译器警告的地方。这使所有表达式都变成规范形式，避免了不同开发人员对什么是“易于阅读”表达式有不同想法的问题。<br>对于三元运算符例外  </p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">result = (a == b) ? <span class="literal">true</span> : <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+<p>条件应用大括号括起来，以使三元运算符在从左到右阅读时更容易发现。  </p>
+</li>
+</ul>
+<h2 id="include"><a href="#include" class="headerlink" title="include"></a>include</h2><ul>
+<li>所有文件都必须包含自己的依赖项，而不是通过自己依赖项来包含依赖项  </li>
+<li>不要包括不使用的东西<br>使用<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span>  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>  </span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+或者  <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="string">"#pragma once"</span></span><br></pre></td></tr></table></figure>
+来避免重复包含  </li>
+</ul>
+<h2 id="其他细节"><a href="#其他细节" class="headerlink" title="其他细节"></a>其他细节</h2><ul>
+<li><p>行尾或空行中没有尾随空格。  </p>
+</li>
+<li><p>文件名要全部小写，可以包含下划线 _ ,名字应该具有描述性，避免使用缩写。<br>每一个 .c 文件都要有一个对应的 .h 文件   </p>
+</li>
+<li><p>充分利用编译时检查的优势，因此警告应尽可能严格检查   </p>
+</li>
+<li><p>不要调用或者向上引用。也就是说在当前层不要调用任何当前层之上的东西    </p>
+</li>
+<li><p>代码公共接口应该少且易于使用，做一些必不可少的事情，并且所有不重要的实现都应该对用户隐藏。</p>
+</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>C语言</tag>
+        <tag>STM32</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Markdown语法</title>
     <url>/2020/02/04/Markdown%E8%AF%AD%E6%B3%95/</url>
     <content><![CDATA[<hr>
 <p>#MarkDown标题<br>一级标题<br>=======<br>二级标题</p>
 <hr>
+<a id="more"></a>
 <p>井号可表示1到六级标题<br>#一级<br>##二级<br>###三级<br>######六级</p>
 <hr>
 <p>#MarkDown段落格式<br>换行时两个或两个以上的空格加上换行</p>
@@ -103,30 +234,5 @@
         <tag>Markdown</tag>
         <tag>编程</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>DEMO</title>
-    <url>/2019/12/26/DEMO/</url>
-    <content><![CDATA[<p>##cankao</p>
-<hr>
-]]></content>
-  </entry>
-  <entry>
-    <title>Hello World</title>
-    <url>/2019/12/26/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-]]></content>
   </entry>
 </search>
