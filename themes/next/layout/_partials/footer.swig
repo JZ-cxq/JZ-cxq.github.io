@@ -1,12 +1,12 @@
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
 <div class="copyright">{#
 #}{% set current = date(Date.now(), "YYYY") %}{#
 #}&copy; {% if theme.footer.since and theme.footer.since != current %}{{ theme.footer.since }} &mdash; {% endif %}{#
-#}<span itemprop="copyrightYear">{{ current }}</span>
-  <span class="with-love">
-    <i class="fa fa-{{ theme.footer.icon }}"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">{{ theme.footer.copyright || config.author }}</span>
-
+#}
+<i class="fa fa-user"></i> <span id="busuanzi_value_site_pv"></span>
+<i class="fa fa-eye"></i>  <span id="busuanzi_value_site_uv"></span>
   {% if theme.post_wordcount.totalcount %}
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
@@ -19,6 +19,7 @@
     #}{{ totalcount(site, '0,0.0a') }}{#
   #}</span>
   {% endif %}
+
 </div>
 <div class="powered-by">
 <i class="fa fa-user-md"></i>
@@ -46,3 +47,8 @@
   #}{{ theme.footer.custom_text }}{#
 #}</div>
 {% endif %}
+
+
+
+
+
