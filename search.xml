@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>嵌入式代码开发规范</title>
+    <url>/2020/02/05/%E5%B5%8C%E5%85%A5%E5%BC%8F%E4%BB%A3%E7%A0%81%E5%BC%80%E5%8F%91%E8%A7%84%E8%8C%83/</url>
+    <content><![CDATA[<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>这是一个嵌入式开发的代码规范文档<br>为了在写代码时有据可循而不是凭印象来编写，故输出文档形式<br>在编写期间参考了 Linux内核，谷歌和Bataflight等代码规范和git,cmockery,micropython,ametal,bataflight等工程代码</p>
+<a id="more"></a>
+<h1 id="缩进"><a href="#缩进" class="headerlink" title="缩进"></a>缩进</h1><p>1 tab表示四个空格  </p>
+<p>除了注释、文档和 Kconfig 之外，不要使用空格来缩进</p>
+<h1 id="把长的行和字符串打散"><a href="#把长的行和字符串打散" class="headerlink" title="把长的行和字符串打散"></a>把长的行和字符串打散</h1><p>代码风格的意义就在于用平常使用的工具来维持代码的可读性和可维护性。</p>
+<p>每一行的长度的限制是 120 列，长于 120 列的语句要打散成有意义的片段。因为 120 列便于在GitHub上查看，除非超过 120 列能显著增加可读性并且不会隐藏信息。  </p>
+<p>子片段要明显短于母片段，并明显靠右。这同样适用于有着很长参数列表的函数头。  </p>
+<p>绝对不要打散对用户可见的字符串，例如 printk 信息，因为这样就很难对它们 grep。  </p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">parse_bundle_header</span><span class="params">(<span class="keyword">int</span> fd, struct bundle_header *header,</span></span></span><br><span class="line"><span class="function"><span class="params">			                    <span class="keyword">const</span> <span class="keyword">char</span> *report_path)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">strbuf</span> <span class="title">buf</span> = <span class="title">STRBUF_INIT</span>;</span></span><br><span class="line">	<span class="keyword">int</span> status = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/* The bundle header begins with the signature */</span></span><br><span class="line">	<span class="keyword">if</span> (strbuf_getwholeline_fd(&amp;buf, fd, <span class="string">'\n'</span>) ||</span><br><span class="line">	    <span class="built_in">strcmp</span>(buf.buf, bundle_signature)) &#123;</span><br><span class="line">		<span class="keyword">if</span> (report_path) &#123;</span><br><span class="line">			error(_(<span class="string">"'%s' does not look like a v2 bundle file"</span>),</span><br><span class="line">			      report_path);</span><br><span class="line">        &#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="大括号的放置"><a href="#大括号的放置" class="headerlink" title="大括号的放置"></a>大括号的放置</h1><p>起始大括号放在行尾，结束大括号放在行首,所以：  </p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (x is <span class="literal">true</span>) &#123;</span><br><span class="line">    we <span class="keyword">do</span> y</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这适用于所有的非函数语句块 (if, switch, for, while, do)。比如：  </p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (x == y) &#123;</span><br><span class="line">    we <span class="keyword">do</span> x</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (x &gt; y) &#123;</span><br><span class="line">    we <span class="keyword">do</span> y</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    we <span class="keyword">do</span> z</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>无论 if 和 else 后面是不是单个语句， <strong>{} 都不可省略</strong></li>
+</ul>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">switch</span> (action) &#123;</span><br><span class="line"><span class="keyword">case</span> ADD:</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"add"</span>;</span><br><span class="line"><span class="keyword">case</span> REMOVE:</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"remove"</span>;</span><br><span class="line"><span class="keyword">case</span> CHANGE:</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"change"</span>;</span><br><span class="line"><span class="keyword">default</span>:</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= <span class="number">10</span>; i ++) &#123;</span><br><span class="line">    we <span class="keyword">do</span> y</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">do</span> &#123;</span><br><span class="line">    body of <span class="keyword">do</span>-loop</span><br><span class="line">&#125; <span class="keyword">while</span> (condition);</span><br></pre></td></tr></table></figure>
+<p>不过，有一个例外，那就是函数：函数的起始大括号放置于下一行的开头，所以：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">function</span><span class="params">(<span class="keyword">int</span> x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    body of function</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="空格的放置"><a href="#空格的放置" class="headerlink" title="空格的放置"></a>空格的放置</h1><ul>
+<li><p>空格的使用方式主要取决于它是用于函数还是关键字。(大多数) 关键字后要加一个空格。值得注意的例外是 sizeof, typeof, alignof 和 <strong>attribute</strong>，这    些关键字某些程度上看起来更像函数 (它们也常常伴随小括号而使用，尽管在 C 里这样的小括号不是必需的，就像 struct fileinfo info; 声明过后的 sizeof info)。<br>所以在这些关键字之后放一个空格:  </p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>, <span class="keyword">switch</span>, <span class="keyword">case</span>, <span class="keyword">for</span>, <span class="keyword">do</span>, <span class="keyword">while</span></span><br></pre></td></tr></table></figure>
+<p>但是不要在 sizeof, typeof, alignof 或者 <strong>attribute</strong> 这些关键字之后放空格。 例如，  </p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">s = <span class="keyword">sizeof</span>(struct file);</span><br></pre></td></tr></table></figure></li>
+<li><p>不要在小括号里的表达式两侧加空格。  </p>
+</li>
+<li><p>当声明指针类型或者返回指针类型的函数时， * 的首选使用方式是使之靠近变量名或者函数名，而不是靠近类型名。例如：  </p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">char</span> *linux_banner;</span><br><span class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">long</span> <span class="title">memparse</span><span class="params">(<span class="keyword">char</span> *ptr, <span class="keyword">char</span> **retptr)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">char</span> *<span class="title">match_strdup</span><span class="params">(<span class="keyword">substring_t</span> *s)</span></span>;</span><br></pre></td></tr></table></figure></li>
+<li><p>大多数二元和三元操作符两侧使用一个空格，例如下面所有这些操作符:  </p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">=  +  -  &lt;  &gt;  *  /  %  |  &amp;  ^  &lt;=  &gt;=  ==  !=  ?  :</span><br></pre></td></tr></table></figure></li>
+<li><p>但是一元操作符后不要加空格:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">&amp;  *  +  -  ~  !  <span class="keyword">sizeof</span>  typeof  <span class="keyword">alignof</span>  __attribute__  defined</span><br></pre></td></tr></table></figure></li>
+<li><p>前缀自加和自减和后缀自加和自减一元操作符前不加空格:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">++  --</span><br></pre></td></tr></table></figure></li>
+<li><p>. 和 -&gt; 结构体成员操作符前后不加空格。  </p>
+</li>
+<li><p>&amp; 和 *  作为指针和引用时与变量之间不加空格。  </p>
+</li>
+<li><p>行尾或空白行中没有尾随空格。  </p>
+</li>
+</ul>
+<h1 id="typedef"><a href="#typedef" class="headerlink" title="typedef"></a>typedef</h1><ul>
+<li>最后一个元素后带有逗号，使在审阅时只显示添加的部分 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">enum</span> &#123;</span><br><span class="line">    MSP_RESULT_ACK = <span class="number">1</span>,</span><br><span class="line">    MSP_RESULT_ERROR = <span class="number">-1</span>,</span><br><span class="line">    MSP_RESULT_NO_REPLY = <span class="number">0</span>,</span><br><span class="line">    MSP_RESULT_CMD_UNKNOWN = <span class="number">-2</span>,</span><br><span class="line">&#125; msp_result_e;</span><br></pre></td></tr></table></figure></li>
+<li>结构体名称motor_mixer_s不可省略，以便作为前置引用  <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">motor_mixer_s</span> &#123;</span></span><br><span class="line">    <span class="keyword">float</span> throttle;</span><br><span class="line">...</span><br><span class="line">    <span class="keyword">float</span> yaw;</span><br><span class="line">&#125; <span class="keyword">motor_mixer_t</span>;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h1 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h1><ul>
+<li><p>变量使用小写字母加 _ 的方式命名，不使用大小写混合方式。(但是当使用官方库或者第三方程序时，代码风格和他们保持一致) ,变量应该是简短且有意义的名词。  </p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">uint8_t</span> lptim1_count_overflow;</span><br><span class="line"><span class="keyword">uint32_t</span> lptim1_count_value;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>C 程序员不使用类似ThisVariableIsATemporaryCounter 这样华丽的名字。C 程序员会称那个变量为 tmp    </p>
+</li>
+<li><p>本地变量名应该简短，而且能够表达相关的含义。如果你有一些随机的整数型的循环计数器，它应该被称为 i 。叫它 loop_counter 并无益处  </p>
+</li>
+<li><p>同样称一个全局函数为 foo（无意义的名字） 是一个难以饶恕的错误。</p>
+</li>
+<li><p>避免使用全局变量(只有当你 * 真正 * 需要它们的时候再用它)，变量应该在最小作用区域前声明,必要时可增加 {} 进一步限制范围  </p>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>当不同的变量的使用无关时，声明后应留一个空白行。</p>
+</li>
+<li><p>不要依赖隐式转换。  </p>
+</li>
+<li><p>浮点常量应使用“ f”后缀定义，例如1.0f和3.1415926f，否则可能会发生双重转换。</p>
+</li>
+</ul>
+<h1 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h1><h2 id="命名"><a href="#命名" class="headerlink" title="命名"></a>命名</h2><ul>
+<li>函数使用小写字母加 _ 的方式命名，名称包含 动词 + 名词 ，如delete_page,告诉系统“用”某物“做”某事。非静态函数应该以他们的类名或者文件名作为前缀  <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">power_clock_init</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">power_enter_stop</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">power_enter_run</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">power_enter_lprun</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="参数规则"><a href="#参数规则" class="headerlink" title="参数规则"></a>参数规则</h2><ul>
+<li>数据应从右向左移动，如 memcpy（void * dst，const void * src，size_t size）。<br>这也模仿了赋值运算符（例如dst = src;），即输出参数在前，输入参数在后，且所有按引用传递的参数必须加上 const</li>
+</ul>
+<h2 id="声明"><a href="#声明" class="headerlink" title="声明"></a>声明</h2><ul>
+<li>在其包含的.c文件之外未使用的函数应声明为静态。 </li>
+<li>非静态函数应在单个.h文件中声明它们，可在函数前加相同的前缀，利于分辨功能作用对象<br>使用<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> MODULENAME_INTERNALS_</span></span><br><span class="line">… declarations …</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+来保证只包含必要的内容  </li>
+</ul>
+<h1 id="执行"><a href="#执行" class="headerlink" title="执行"></a>执行</h1><ul>
+<li><p>切勿将多条语句放在一行上。  </p>
+</li>
+<li><p>函数应该简短而漂亮，并且只完成一件事情。函数应该可以一屏或者两屏显示完(120*24)，只做一件事情，而且把它做好。</p>
+</li>
+<li><p>一个函数的最大长度是和该函数的复杂度和缩进级数成反比的。所以，如果你有一个理论上很简单的只有一个很长 (但是简单) 的 case 语句的函数，而且你需要在每个 case 里做很多很小的事情，这样的函数尽管很长，但也是可以的。  </p>
+</li>
+<li><p>函数的另外一个衡量标准是本地变量的数量。此数量不应超过 5－10 个，否则你的函数就有问题了。重新考虑一下你的函数，把它分拆成更小的函数。人的大脑一般可以轻松的同时跟踪 7 个不同的事物，如果再增多的话，就会糊涂了。即便你聪颖过人，你也可能会记不清你 2 个星期前做过的事情  </p>
+</li>
+<li><p>一个函数在每个调用中应该只从硬件读取一次数据，最好一次在一个地方读取一次。<br>例如，如果多次需要陀螺仪角度或时间，则读取一次并存储在局部变量中</p>
+</li>
+<li><p>在表达式中，仅应在需要括号的地方使用括号，即运算符优先级的计算顺序不正确，或在没有括号的情况下触发编译器警告的地方。这使所有表达式都变成规范形式，避免了不同开发人员对什么是“易于阅读”表达式有不同想法的问题。<br>对于三元运算符例外  </p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">result = (a == b) ? <span class="literal">true</span> : <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+<p>条件应用大括号括起来，以使三元运算符在从左到右阅读时更容易发现。  </p>
+</li>
+</ul>
+<h1 id="include"><a href="#include" class="headerlink" title="include"></a>include</h1><ul>
+<li>所有文件都必须包含自己的依赖项，而不是通过自己依赖项来包含依赖项  </li>
+<li>不要包括不使用的东西<br>使用<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span>  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>  </span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+或者  <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="string">"#pragma once"</span></span><br></pre></td></tr></table></figure>
+来避免重复包含  </li>
+</ul>
+<h1 id="其他细节"><a href="#其他细节" class="headerlink" title="其他细节"></a>其他细节</h1><ul>
+<li><p>行尾或空行中没有尾随空格。  </p>
+</li>
+<li><p>文件名要全部小写，可以包含下划线 _ ,名字应该具有描述性，避免使用缩写。<br>每一个 .c 文件都要有一个对应的 .h 文件   </p>
+</li>
+<li><p>充分利用编译时检查的优势，因此警告应尽可能严格检查   </p>
+</li>
+<li><p>不要调用或者向上引用。也就是说在当前层不要调用任何当前层之上的东西    </p>
+</li>
+<li><p>代码公共接口应该少且易于使用，做一些必不可少的事情，并且所有不重要的实现都应该对用户隐藏。</p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>嵌入式</category>
+      </categories>
+      <tags>
+        <tag>C语言</tag>
+        <tag>STM32</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Markdown语法</title>
+    <url>/2020/02/04/Markdown%E8%AF%AD%E6%B3%95/</url>
+    <content><![CDATA[<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>Markdown是一款轻量级标记语言，可编辑后直接渲染出效果，应用广泛<br>本文参考菜鸟教程，作为练习记录，使用VScode编辑  </p>
+<a id="more"></a>
+<h1 id="标题"><a href="#标题" class="headerlink" title="标题"></a>标题</h1><h2 id="标题格式"><a href="#标题格式" class="headerlink" title="标题格式"></a>标题格式</h2><ul>
+<li>使用 ==== 或 —–区分一二级标题  <blockquote>
+<pre><code>一级标题
+=======
+二级标题
+---------------</code></pre></blockquote>
+</li>
+<li>使用 # 标记1-6级标题  <blockquote>
+<pre><code># 一级
+## 二级
+### 三级
+###### 六级</code></pre></blockquote>
+</li>
+</ul>
+<h1 id="段落格式"><a href="#段落格式" class="headerlink" title="段落格式"></a>段落格式</h1><h2 id="换行"><a href="#换行" class="headerlink" title="换行"></a>换行</h2><ul>
+<li>行末两个或两个以上的空格加上回车换行   <blockquote>
+<p>第一行<br>第二行  </p>
+</blockquote>
+</li>
+<li>使用一个空行来分隔  <blockquote>
+<pre><code>第一行
+
+第二行</code></pre></blockquote>
+</li>
+</ul>
+<h2 id="字体"><a href="#字体" class="headerlink" title="字体"></a>字体</h2><blockquote>
+<pre><code>*斜体文本*
+_斜体文本_
+**粗体文本**
+__粗体文本__
+***粗斜体文本***
+___粗斜体文本___</code></pre><p><em>斜体文本</em><br><em>斜体文本</em><br><strong>粗体文本</strong><br><strong>粗体文本</strong><br><strong><em>粗斜体文本</em></strong><br><strong><em>粗斜体文本</em></strong></p>
+</blockquote>
+<h2 id="分隔线"><a href="#分隔线" class="headerlink" title="分隔线"></a>分隔线</h2><blockquote>
+<pre><code>***
+___
+---  </code></pre><hr>
+<hr>
+<hr>
+</blockquote>
+<h2 id="删除线"><a href="#删除线" class="headerlink" title="删除线"></a>删除线</h2><blockquote>
+<pre><code>~~删除线~~  </code></pre><p><del>删除线</del>  </p>
+</blockquote>
+<h2 id="下划线"><a href="#下划线" class="headerlink" title="下划线"></a>下划线</h2><blockquote>
+<pre><code>&lt;u&gt;下划线&lt;/u&gt;</code></pre><p><u>下划线</u>  </p>
+</blockquote>
+<h2 id="脚注"><a href="#脚注" class="headerlink" title="脚注"></a>脚注</h2><blockquote>
+<pre><code>需要被脚注的文本[^脚注].  
+
+[^脚注]:脚注内容</code></pre><p>需要被脚注的文本<a href="脚注内容">^脚注</a>.  </p>
+</blockquote>
+<h1 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h1><h2 id="有序列表"><a href="#有序列表" class="headerlink" title="有序列表"></a>有序列表</h2><ol>
+<li>第一项  </li>
+<li>第二项  </li>
+<li>第三项</li>
+</ol>
+<h2 id="无序列表"><a href="#无序列表" class="headerlink" title="无序列表"></a>无序列表</h2><p>+,-，与 * 功能相同</p>
+<blockquote>
+<pre><code>* 第一项  
++ 第二项  
+- 第三项  </code></pre><ul>
+<li>第一项  </li>
+</ul>
+<ul>
+<li>第二项</li>
+</ul>
+<ul>
+<li>第三项</li>
+</ul>
+</blockquote>
+<h2 id="列表嵌套"><a href="#列表嵌套" class="headerlink" title="列表嵌套"></a>列表嵌套</h2><blockquote>
+<pre><code>1. 第一项：
+    * 第一项嵌套的第一个元素
+2. 第二项：  
+    * 第二项嵌套的第一个元素  </code></pre><ol>
+<li>第一项：<ul>
+<li>第一项嵌套的第一个元素</li>
+</ul>
+</li>
+<li>第二项：  <ul>
+<li>第二项嵌套的第一个元素</li>
+</ul>
+</li>
+</ol>
+</blockquote>
+<h1 id="区块"><a href="#区块" class="headerlink" title="区块"></a>区块</h1><h2 id="区块-1"><a href="#区块-1" class="headerlink" title="区块"></a>区块</h2><blockquote>
+<pre><code>&gt; 区块内容  
+&gt; 区块内容  
+&gt; 区块内容</code></pre><blockquote>
+<p>区块内容<br>区块内容<br>区块内容</p>
+</blockquote>
+</blockquote>
+<h2 id="区块嵌套"><a href="#区块嵌套" class="headerlink" title="区块嵌套"></a>区块嵌套</h2><blockquote>
+<pre><code>&gt; 最外层
+&gt; &gt; 第一层嵌套
+&gt; &gt; &gt; 第二层嵌套  </code></pre><blockquote>
+<p>最外层</p>
+<blockquote>
+<p>第一层嵌套</p>
+<blockquote>
+<p>第二层嵌套  </p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<h2 id="区块中使用列表"><a href="#区块中使用列表" class="headerlink" title="区块中使用列表"></a>区块中使用列表</h2><blockquote>
+<pre><code>&gt; 1. 第一项
+&gt; 2. 第二项  </code></pre><blockquote>
+<ol>
+<li>第一项</li>
+<li>第二项 </li>
+</ol>
+</blockquote>
+</blockquote>
+<h2 id="列表中使用区块"><a href="#列表中使用区块" class="headerlink" title="列表中使用区块"></a>列表中使用区块</h2><blockquote>
+<pre><code>1. 第一项  
+    &gt; 区块内容  
+    &gt; 区块内容</code></pre><ol>
+<li>第一项  <blockquote>
+<p>区块内容<br>区块内容  </p>
+</blockquote>
+</li>
+</ol>
+</blockquote>
+<h1 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h1><h2 id="代码片段"><a href="#代码片段" class="headerlink" title="代码片段"></a>代码片段</h2><blockquote>
+<pre><code>这是`init()`函数</code></pre><p>这是<code>init()</code>函数  </p>
+</blockquote>
+<h2 id="代码区块"><a href="#代码区块" class="headerlink" title="代码区块"></a>代码区块</h2><ul>
+<li><p>用 ``` 包裹一段代码，并指定一种语言（也可以不指定）</p>
+<blockquote>
+<pre><code><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">markdown_test</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    ...;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></code></pre><pre><code class="C"><span class="function"><span class="keyword">void</span> <span class="title">markdown_test</span><span class="params">(<span class="keyword">void</span>)</span></span>
+<span class="function"></span>{
+    ...;
+}</code></pre>
+</blockquote>
+</li>
+<li><p>代码区块使用 4 个空格或者一个制表符（Tab 键）</p>
+<blockquote>
+<pre><code>    void markdown_test(void)
+    {
+        ...;
+    }
+void markdown_test(void)
+{
+    ...;
+}</code></pre></blockquote>
+</li>
+</ul>
+<h1 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h1><h2 id="添加链接"><a href="#添加链接" class="headerlink" title="添加链接"></a>添加链接</h2><ul>
+<li><p>用文字标志链接</p>
+<blockquote>
+<pre><code>[个人博客](https://jz-cxq.github.io/)  </code></pre><p><a href="https://jz-cxq.github.io/">个人博客</a>  </p>
+</blockquote>
+</li>
+<li><p>直接添加网址  </p>
+<blockquote>
+<pre><code>个人博客地址 &lt;https://jz-cxq.github.io/&gt;  </code></pre><p>个人博客地址 <a href="https://jz-cxq.github.io/">https://jz-cxq.github.io/</a>   </p>
+</blockquote>
+</li>
+<li><p>用文章结束的变量标记链接</p>
+<blockquote>
+<pre><code>[个人博客][1]  
+在文章结尾加
+[1]: https://jz-cxq.github.io/  </code></pre><p><a href="http://static.runoob.com/images/runoob-logo.png" target="_blank" rel="noopener">个人博客</a><br>在文章结尾加<br><a href="http://static.runoob.com/images/runoob-logo.png" target="_blank" rel="noopener">1</a>: <a href="https://jz-cxq.github.io/">https://jz-cxq.github.io/</a></p>
+</blockquote>
+</li>
+</ul>
+<h1 id="图片"><a href="#图片" class="headerlink" title="图片"></a>图片</h1><h2 id="添加图片"><a href="#添加图片" class="headerlink" title="添加图片"></a>添加图片</h2><blockquote>
+<p><a href="https://www.jianshu.com/p/280c6a6f2594" target="_blank" rel="noopener">添加图片的三种方法</a>  </p>
+<pre><code>![alt 属性文本](图片地址 &quot;可选标题&quot;)</code></pre><p>alt 熟悉文本：图片的Alt标签，用来描述图片的关键词<br>图片链接：可以是图片的本地地址或者是网址<br>“可选标题”：鼠标悬置于图片上会出现的标题文字，可以不写  </p>
+</blockquote>
+<ul>
+<li><p>添加网络图片：</p>
+<blockquote>
+<p><code>![alt](http://static.runoob.com/images/runoob-logo.png)</code><br><img src="http://static.runoob.com/images/runoob-logo.png" alt="alt">   </p>
+</blockquote>
+</li>
+<li><p>添加本地图片：</p>
+<blockquote>
+<p><code>![alt](C:\Users\yanfa\Desktop\EM截图_2020212144814.png)</code><br><img src="C:%5CUsers%5Cyanfa%5CDesktop%5CEM%E6%88%AA%E5%9B%BE_2020212144814.png" alt="alt"></p>
+</blockquote>
+</li>
+<li><p>也可以像网址那样对图片网址使用变量:  </p>
+<blockquote>
+<p><code>![RUNOOB][1]</code><br><code>[1]: http://static.runoob.com/images/runoob-logo.png</code>  </p>
+<p><img src="http://static.runoob.com/images/runoob-logo.png" alt="RUNOOB">   </p>
+</blockquote>
+</li>
+</ul>
+<h2 id="编辑图片"><a href="#编辑图片" class="headerlink" title="编辑图片"></a>编辑图片</h2><ul>
+<li>按照比例修改  <blockquote>
+<p><code>&lt;img src=&quot;http://static.runoob.com/images/runoob-logo.png&quot; width=&quot;100%&quot;&gt;</code>  </p>
+<img src="http://static.runoob.com/images/runoob-logo.png" width="100%"> 
+</blockquote>
+</li>
+<li>直接修改大小  <blockquote>
+<p><code>&lt;img src=&quot;http://static.runoob.com/images/runoob-logo.png&quot; width=&quot;100&quot; height=&quot;100&quot;&gt;</code>  </p>
+<img src="http://static.runoob.com/images/runoob-logo.png" width="100" height="100">
+</blockquote>
+</li>
+</ul>
+<h1 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h1><table>
+<thead>
+<tr>
+<th align="left">表头</th>
+<th align="center">表头</th>
+<th align="right">表头</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">单元格单元格</td>
+<td align="center">单</td>
+<td align="right">单元格</td>
+</tr>
+<tr>
+<td align="left">1</td>
+<td align="center"></td>
+<td align="right"></td>
+</tr>
+<tr>
+<td align="left">可以用：表示表格的对齐方式</td>
+<td align="center"></td>
+<td align="right"></td>
+</tr>
+</tbody></table>
+<h1 id="高级技巧"><a href="#高级技巧" class="headerlink" title="高级技巧"></a>高级技巧</h1><p>使用 <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Del</kbd> 重启电脑</p>
+<p>使用 <b>Ctrl</b>+<br>Alt</br>+<br>Del</br> 重启电脑<br>使用 <i>Ctrl<i>+<em>Alt</em>+<sub>Del</sub> 重启电脑</p>
+<p>用反斜杠表示转义<br><strong>文本加粗</strong><br>**文本加粗**</p>
+<p>$$<br>\mathbf{V}_1 \times \mathbf{V}_2 =  \begin{vmatrix}<br>\mathbf{i} &amp; \mathbf{j} &amp; \mathbf{k} \<br>\frac{\partial X}{\partial u} &amp;  \frac{\partial Y}{\partial u} &amp; 0 \<br>\frac{\partial X}{\partial v} &amp;  \frac{\partial Y}{\partial v} &amp; 0 \<br>\end{vmatrix}<br>$$tep1}{\style{visibility:hidden}{(x+1)(x+1)}}<br>$$</p>
+]]></content>
+      <categories>
+        <category>Markdown</category>
+      </categories>
+      <tags>
+        <tag>Markdown</tag>
+      </tags>
+  </entry>
+</search>
